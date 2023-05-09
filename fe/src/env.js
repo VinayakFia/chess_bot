@@ -1,0 +1,1 @@
+export const beURL = "http://localhost:8000";

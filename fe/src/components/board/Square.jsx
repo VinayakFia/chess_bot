@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { PiecesContext } from "./Board";
 
 const getImageSrc = (type) => {
   switch (type) {
@@ -31,12 +32,24 @@ const getImageSrc = (type) => {
   }
 };
 
-const Square = ({ type, color, num }) => {
+const Square = ({ id, highlightMoves }) => {
+  const color = (Math.floor(id / 8) + id) % 2 === 0 ? "w" : "b";
+  const pieces = useContext(PiecesContext);
+  const type = pieces[id].piece;
+
+  const [highlighted, sethighlighted] = useState(false);
+
+  useEffect(() => {
+    sethighlighted(pieces[id].highlighted);
+    console.log("here");
+  }, [pieces]);
+
   return (
     <button
-      className={`${
-        color === "b" ? "bg-gray-600" : " bg-gray-300"
-      } rounded-sm ${type !== "e" ? "hover:bg-violet-600" : ""}`}
+      className={`${color === "b" ? "bg-gray-600" : " bg-gray-300"
+        } rounded-sm ${type !== "e" ? "hover:bg-violet-600" : ""} 
+        ${highlighted ? color === "b"  ? " bg-blue-500" : " bg-blue-300" : ""}`}
+      onClick={() => highlightMoves(id)}
     >
       <img src={getImageSrc(type)} className=" w-full h-full" alt={type}></img>
     </button>
