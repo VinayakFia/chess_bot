@@ -56,7 +56,7 @@ export default class Pawn extends Piece {
                     from: pos, 
                     to: { row: pos.row + 1, col: pos.col } 
                 });
-            if (pos.row === 2 
+            if (pos.row === 1
                 && board.colorOfSquare(pos.row + 1, pos.col) === "e" 
                 && board.colorOfSquare(pos.row + 2, pos.col) === "e")
                 res.push({

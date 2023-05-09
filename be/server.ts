@@ -1,8 +1,10 @@
 import express from "express";
 import ChessBoard from "./ChessBoard";
 const app = express();
+const cors = require('cors')
 app.use(express.json());
-const port = 5000;
+app.use(cors())
+const port = 8000;
 
 let chessBoard: ChessBoard;
 
@@ -11,7 +13,9 @@ app.get("/", (req, res) => {
 });
 
 app.post("/create", (req, res) => {
+    console.log("/create");
     const fen = req.body.fen;
+    console.log(req.body);
     if (!fen) {
         res.status(400).send("No fen given!");
     } else {
@@ -21,6 +25,7 @@ app.post("/create", (req, res) => {
 });
 
 app.get("/validMoves", (req, res) => {
+    console.log("/validMoves")
     let color = req.query.color;
     if (!chessBoard) {
         res.status(400).send("No board created");

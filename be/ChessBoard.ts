@@ -86,7 +86,6 @@ export default class ChessBoard {
     }
 
     public colorOfSquare(row: number, col: number): Color {
-        console.log(row, col);
         return this.pieces[row][col].getColor();
     }
 
@@ -101,7 +100,7 @@ export default class ChessBoard {
         const res: Move[] = [];
         for (const row of this.pieces) {
             for (const piece of row) {
-                if (piece.getColor() === color) continue;
+                if (piece.getColor() !== color) continue;
                 piece.validMoves(this).forEach((m) => res.push(m));
             }
         }
