@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { PiecesContext } from "./Board";
+import { beURL } from "../../env";
 
 const getImageSrc = (type) => {
   switch (type) {
@@ -34,22 +35,62 @@ const getImageSrc = (type) => {
 
 const Square = ({ id, highlightMoves }) => {
   const color = (Math.floor(id / 8) + id) % 2 === 0 ? "w" : "b";
-  const pieces = useContext(PiecesContext);
+  const { pieces, setPieces, selected, setTurn, bestMove } =
+    useContext(PiecesContext);
   const type = pieces[id].piece;
 
   const [highlighted, sethighlighted] = useState(false);
 
   useEffect(() => {
     sethighlighted(pieces[id].highlighted);
-    console.log("here");
-  }, [pieces]);
+  }, [id, pieces]);
+
+  const makeMove = async (i) => {
+    if (!highlighted) return;
+
+    let res = await fetch(`${beURL}/move?fr=${selected}&to=${i}`, {
+      method: "POST",
+    });
+
+    if (res.status !== 200) {
+      console.error("Error making move");
+      return;
+    }
+
+    res = await fetch(`${beURL}/getPieces`, { method: "GET" });
+    res = await res.json();
+
+    setPieces(
+      res.map((x) => {
+        return { piece: x, highlighted: false };
+      })
+    );
+    setTurn((old) => (old === "w" ? "b" : "w"));
+  };
+
+  const squareClick = (id) => {
+    highlightMoves(id);
+    makeMove(id);
+  };
 
   return (
     <button
-      className={`${color === "b" ? "bg-gray-600" : " bg-gray-300"
-        } rounded-sm ${type !== "e" ? "hover:bg-violet-600" : ""} 
-        ${highlighted ? color === "b"  ? " bg-blue-500" : " bg-blue-300" : ""}`}
-      onClick={() => highlightMoves(id)}
+      className={`rounded-sm ${type !== "e" ? "hover:bg-violet-600" : ""} 
+        ${selected === id ? "bg-violet-500" : ""}
+        ${
+          highlighted
+            ? color === "b"
+              ? " bg-blue-500"
+              : " bg-blue-300"
+            : id === bestMove.from || id === bestMove.to
+            ? color === "b"
+              ? "bg-pink-500"
+              : "bg-pink-300"
+            : color === "b"
+            ? "bg-gray-600"
+            : "bg-gray-300"
+        }`}
+      onClick={() => squareClick(id)}
     >
       <img src={getImageSrc(type)} className=" w-full h-full" alt={type}></img>
     </button>

@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import Square from "./Square";
 import { beURL } from "../../env";
 
@@ -17,44 +17,60 @@ const setupPieces = (fen) => {
     }
   }
   return pieces;
-}
+};
 
 export const PiecesContext = createContext();
 
 const Board = ({ fen }) => {
   const [pieces, setPieces] = useState(setupPieces(fen));
   const [moves, setMoves] = useState([]);
+  const [turn, setTurn] = useState("w");
+  const [selected, setSelected] = useState({ row: -1, col: -1 });
+  const [bestMove, setBestMove] = useState({ from: -1, to: -1 });
 
-  const highlightMoves = (n) => {
-    const np = pieces.map((p) => { p.highlighted = false; return p });
+  const highlightMoves = (i) => {
+    const np = pieces.map((p) => {
+      p.highlighted = false;
+      return p;
+    });
 
-    let col = n % 8;
-    let row = Math.ceil((n + 1) / 8) - 1;
-    const validMoves = moves.filter((x) => x.from.row === row && x.from.col === col)
+    const validMoves = moves.filter((x) => x.from === i);
 
     for (const move of validMoves) {
-      const id = move.to.row * 8 + move.to.col;
-      np[id].highlighted = true;
+      np[move.to].highlighted = true;
     }
 
     setPieces(np);
-  }
+    setSelected(i);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetch(`${beURL}/validMoves?color=w`, { method: 'GET' })
+      await fetch(`${beURL}/validMoves`, { method: "GET" })
         .then((res) => res.json())
         .then((res) => setMoves(res));
-    }
+    };
 
     fetchData();
-  }, []);
+  }, [turn]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetch(`${beURL}/bestMove`, { method: "GET" })
+        .then((res) => res.json())
+        .then((res) => setBestMove(res));
+    };
+
+    fetchData();
+  }, [turn]);
 
   return (
-    <PiecesContext.Provider value={pieces}>
-      <div className="grid grid-cols-8 h-1/2 rounded-md p-10 bg-slate-900">
+    <PiecesContext.Provider
+      value={{ pieces, setPieces, turn, setTurn, selected, bestMove }}
+    >
+      <div className="grid grid-cols-8 h-1/2 rounded-md p-10 bg-slate-900 m-auto">
         {pieces.map((c, i) => (
-          <Square id={i} highlightMoves={highlightMoves} />
+          <Square key={i} id={i} highlightMoves={highlightMoves} />
         ))}
       </div>
     </PiecesContext.Provider>

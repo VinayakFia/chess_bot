@@ -1,11 +1,11 @@
-import ChessBoard from "../ChessBoard";
+import ChessBoard from "./ChessBoard";
 import { Color, Move } from "./Move";
 import Piece from "./Piece";
 
 export default class Knight extends Piece {
     
     constructor(row: number, col: number, color: Color) {
-        super(row, col, color);
+        super(row, col, color, 3);
     }
     
     public validMoves(board: ChessBoard): Move[] {
