@@ -1,7 +1,7 @@
 # chess_bot
 # Running
-Typescript + Express Backend -> To run `cd be && ts-node server.ts`
-Javascript + React + Tailwind Frontend -> To run `cd fe && npm start`
+- Typescript + Express Backend -> To run `cd be && ts-node server.ts`
+- Javascript + React + Tailwind Frontend -> To run `cd fe && npm start`
 And as always, make sure to `npm i`.
 
 # About
