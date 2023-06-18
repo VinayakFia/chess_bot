@@ -11,4 +11,7 @@ And as always, make sure to `npm i`.
 
 # Screen Capture
 Below shows the ai avoiding the `fried liver attack` by moving the rook over.
+- Blue -> posible moves
+- Purple -> selecte piece
+- Pink -> AI recommended move
 ![image](https://github.com/VinayakFia/chess_bot/assets/96902642/b52d1392-e064-49ea-8567-4ba98a1b51fd)
